@@ -72,7 +72,8 @@ def get_raster_data(raster_path, data_info):
     :return: gt (GEOTransform) and projection
     """
     raster = gdal.Open(raster_path)  # Extract raster from path
-    gt = raster.GetGeoTransform()  # Get Geotransform Data: Coordinate left upper corner, cellsize, 0, Coord. Lower right corner, 0, cell size
+    gt = raster.GetGeoTransform()  # Get Geotransform Data: Coordinate left upper corner, cellsize, 0, Coord. Lower
+    # right corner, 0, cell size
     proj = raster.GetProjection()  # Get projection of raster
 
     band = raster.GetRasterBand(1)  # Get raster band (the 1st one, since the inputs have only 1)
