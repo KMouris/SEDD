@@ -5,7 +5,7 @@ import SumUpstream_SaveFunctions as SaveData
 """
 @ Authors
 Maria Fernanda Moreales Oreamuno & Kilian Mouris
-Program sums up the cells of an input raster (e.g. travel time per cell) in upstream direction
+Program sums up the pixel values of an input raster (e.g. travel time per cell) in upstream direction
 Important information: 
     -Works for each eight-direction (D8) flow model, here the flow directions are defined according to Jenson & 
      Domingue 1998 (ArcGIS)
