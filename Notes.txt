@@ -1,0 +1,1 @@
+- get_extension is currently not used (delete function or include)

@@ -1,73 +1,41 @@
-import numpy as np
-import pandas as pd
-import gdal
-import os
-import glob
-import sys
-import time
+from config import *
 
 import SumUpstream_ReadDataFunctions as ReadData
 import SumUpstream_SaveFunctions as SaveData
-
-# ---------------------------------------------FUNCTIONS------------------------------------------------------------- #
-
-# ------Functions: Save Results ------------------------------------------------------------------------------------- #
-
-
-
-
-# ---------------------------------------------USER INPUT------------------------------------------------------------ #
 """
-Program is translated from the R code called "SumUpstream.R", which sums up the cells of an input Raster 
-(e.g. travel time per cell) in upstream direction
+Program sums up the cells of an input Raster (e.g. travel time per cell) in upstream direction
 Important information: 
     -Works for each eight-direction (D8) flow model, here the flow directions are defined according to Jenson & 
      Domingue 1998 (ArcGIS)
-    -Requires 2 input rasters: Flow direction and file with data to sum in the upstream direction 
+    -Requires 2 input rasters: Flow direction and file with data to sum in the upstream direction (here traveltime)
     -Both rasters have to have the same properties (same number of columns, rows and georeferencing)
     -Rasters can be in .txt (ASCII format) or in .tif format
     - If the rasters are in ASCII format: the comma delimiter must be a comma and the delimiter must be a space 
-        (if not, change the pd.read_csv input data in the functions "GetASCII_Info" and "GetArray_ASCII")
-"""
+        (if not, change the pd.read_csv input data in the functions "get_ascii_info" and "get_array_ascii")
+        """
 
 start_time = time.time()
 
-# 1. Flow direction raster (in .txt ASCII file format or raster format)
-flowdir_path = r'Y:\Abt1\hiwi\Oreamuno\Tasks\Code_translation\RCode\Input_data_2test\fl_dir_4000.txt'
-
-# 2. Travel time (per cell) raster (in .txt ASCII file format or raster format)
-traveltime_path = r'Y:\Abt1\hiwi\Oreamuno\Tasks\Code_translation\RCode\Input_data_2test\traveltime_percell_corr.txt'
-
-# 3. Projection raster: in case both input rasters are in .txt format (program gets the raster projection)
-proj_raster = r'Y:\Abt1\hiwi\Oreamuno\SY_062016_082019\Rasters\fildemBanja.tif'
-
-# 4. Results path
-results_path = r'P:\aktiv\2018_DLR_DIRT-X\300_Modelling\340 Evaluation\Python Codes\Sum_upstream\Python_Results'
-
-
-# ----------------------------------------- MAIN CODE --------------------------------------------------------------- #
-
 # -------Read Data: ------------------------------------------------------------------------------------------------- #
 
-
-if os.path.splitext(flowdir_path)[1] == ".txt":  # If flowdir raster is in ASCII format
+if ReadData.get_extension(flowdir_path) == ".txt":  # If flowdir raster is in ASCII format
     # Get gt, raster header and no data value information
-    gt, df_head, no_data = ReadData.GetASCII_Info(flowdir_path)
+    gt, df_head, no_data = ReadData.get_ascii_info(flowdir_path)
     # save data to an array
-    flowdir_array = ReadData.GetArray_ASCII(flowdir_path)
+    flowdir_array = ReadData.get_array_ascii(flowdir_path)
 else: # If flowdir raster is in .tif or other raster format
     # Get gt, projection and no data value information
     gt, proj, no_data = ReadData.GetRasterData(flowdir_path, True)
 
 if os.path.splitext(traveltime_path)[1] == ".txt":  # If traveltime raster is in ASCII format
-    ttime_array = ReadData.GetArray_ASCII(traveltime_path)
+    ttime_array = ReadData.get_array_ascii(traveltime_path)
 else:  # If traveltime raster is in .tif or other raster format
     print("No function yet for .tif files ")
 
 # If both input rasters are in .txt format, get the projection data from a third input raster (to later save the raster
 # as a .tif format raster)
 if os.path.splitext(flowdir_path)[1] == ".txt" and os.path.splitext(traveltime_path)[1] == ".txt":
-    proj = ReadData.GetRasterData(proj_raster, False)
+    proj = ReadData.get_raster_data(proj_raster, False)
 
 # -------Generate result rasters ------------------------------------------------------------------------------------ #
 total_ttime = np.full((flowdir_array.shape[0], flowdir_array.shape[1]), no_data)
@@ -205,8 +173,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
 
 # ------- Save results:  -------------------------------------------------------------------------------------------- #
 
-# save_name = results_path + "\\Flowdir.tif"
-# SaveRaster(flowdir_array, save_name, gt, proj)
 
 save_name = results_path + "\\TotalTravelTime.tif"
 SaveData.SaveRaster(total_ttime, save_name, gt, proj)

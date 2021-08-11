@@ -1,10 +1,4 @@
-import numpy as np
-import pandas as pd
-import gdal
-import os
-import glob
-import sys
-import time
+from config import *
 
 """
 Python file with the functions needed to save the data in raster format from the results for the main python program: 
