@@ -177,6 +177,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
 
 
 save_name = results_path + "\\TotalTravelTime.tif"
-SaveData.SaveRaster(total_ttime, save_name, gt, proj)
+SaveData.save_raster(total_ttime, save_name, gt, proj)
 
 print("Program took ", time.time() - start_time, " seconds to run")

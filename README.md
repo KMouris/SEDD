@@ -2,7 +2,7 @@
 
 # Introduction
 The code sums up the pixel values of an input raster along a flow path in upstream direction.
-It can be used calculate the travel time of eroded particles to the river network or catchment outlet according to [Jain and Kothyari (2000)](https://www.tandfonline.com/doi/pdf/10.1080/02626660009492376?needAccess=true). 
+It can be used to calculate the travel time of eroded particles to the river network or catchment outlet based on the pixel-specific travel time according to [Jain and Kothyari (2000)](https://www.tandfonline.com/doi/pdf/10.1080/02626660009492376?needAccess=true). 
 It works principally for each eight direction flow model (D8). Here the flow direction is defined
 according to [Jenson & Domingue 1998](https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/how-flow-direction-works.htm) which is the usual definition in GIS programs.
 
