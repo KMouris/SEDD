@@ -1,5 +1,6 @@
 from config import *
 
+import sedd_raster_calculations as rc
 import SumUpstream_ReadDataFunctions as ReadData
 import SumUpstream_SaveFunctions as SaveData
 """
@@ -20,24 +21,26 @@ start_time = time.time()
 
 # -------Read Data: ------------------------------------------------------------------------------------------------- #
 
-if ReadData.get_extension(flowdir_path) == ".txt":  # If flowdir raster is in ASCII format
+if os.path.splitext(flowdir_path)[1] == ".txt":  # If input flow direction raster is in ASCII format
     # Get gt, raster header and no data value information
-    gt, df_head, no_data = ReadData.get_ascii_info(flowdir_path)
+    gt, df_head, no_data = rc.get_ascii_info(flowdir_path)
     # save data to an array
-    flowdir_array = ReadData.get_array_ascii(flowdir_path)
-else: # If flowdir raster is in .tif or other raster format
-    # Get gt, projection and no data value information
-    gt, proj, no_data = ReadData.GetRasterData(flowdir_path, True)
+    flowdir_array = rc.get_array_ascii(flowdir_path)
 
-if os.path.splitext(traveltime_path)[1] == ".txt":  # If traveltime raster is in ASCII format
-    ttime_array = ReadData.get_array_ascii(traveltime_path)
-else:  # If traveltime raster is in .tif or other raster format
+else: # If input flow direction raster is in .tif or other raster format
+    # Get gt, projection and no data value information
+    gt, proj, no_data = rc.get_raster_data(flowdir_path, True)
+
+if os.path.splitext(traveltime_path)[1] == ".txt":  # If travel time raster is in ASCII format
+    ttime_array = rc.get_array_ascii(traveltime_path)
+
+else:  # If travel time raster is in .tif or other raster format
     print("No function yet for .tif files ")
 
 # If both input rasters are in .txt format, get the projection data from a third input raster (to later save the raster
 # as a .tif format raster)
 if os.path.splitext(flowdir_path)[1] == ".txt" and os.path.splitext(traveltime_path)[1] == ".txt":
-    proj = ReadData.get_raster_data(proj_raster, False)
+    proj = rc.get_raster_data(proj_raster, False)
 
 # -------Generate result rasters ------------------------------------------------------------------------------------ #
 total_ttime = np.full((flowdir_array.shape[0], flowdir_array.shape[1]), no_data)
@@ -53,20 +56,16 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
     for j in range(0, flowdir_array.shape[1]):  # Loop through columns
         # Only do calculations if both flowdir and traveltime rasters have values in cell [i,j]
         if flowdir_array[i][j] != no_data and ttime_array[i][j] != no_data:
-            # print("Starting the cell: [", i, ",", j, "]" )
+            print("Starting the cell: [", i, ",", j, "]" )
             # Cell [i,j] is our starting point, so save coordinates to variables x, y
             x = j  # Columns (j) are equivalent to changes in X
             y = i  # rows (i) are equivalent to changes in Y
             value = 0  # Initialize a variable in which to save the sum of travel time, in the upstream direction
 
-            loopstart_time = time.time()
-
             # Sum the travel time for each cell [i,j], moving in the direction of the flow downstream.
             while 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
-                # print("Next while loop starting for cell: [", i, ",", j, "]")
                 # If flowdir[y,x] is a nodata value cell (river), then exit the while loop and into the next for loop
                 if flowdir_array[y][x] == no_data:
-                    # print("The following cell has a no data value: ", x, ",", y)
                     break
                 else:
                     # Start reading the content of each cell [y,x]
@@ -81,7 +80,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 16:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 2:  # Direction is diagonal E-S
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 2")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update X and Y values
                         x = x + 1
@@ -93,7 +91,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 32:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 4:  # Direction is S
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 4")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update Y value only
                         y = y+1
@@ -104,7 +101,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 64:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 8:  # Direction is diagonal S-W
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 8")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update X and Y values
                         x = x-1
@@ -116,7 +112,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 128:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 16:  # Direction is W
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 16")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update X value only
                         x = x-1
@@ -127,7 +122,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 1:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 32:  # Direction is diagonal: N-W
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 32")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update X and Y values
                         x = x-1
@@ -139,7 +133,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 2:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 64:  # Direction is: N
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 64")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update Y value only
                         y = y-1
@@ -150,7 +143,6 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                             if flowdir_array[y][x] == 4:  # If the next cell returns to previous cell (loop)
                                 break
                     elif flowdir_array[y][x] == 128:  # Direction is diagonal: N-E
-                        # print("Cell coordinates: [", y, ",", x, "] for flow direction type 128")
                         value = value + ttime_array[y][x]  # Add travel time in cell [y,x] to total travel time
                         # Update X and Y values
                         x = x+1
@@ -169,14 +161,9 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
             if total_ttime[i][j] < 0:
                 total_ttime[i][j] = no_data
 
-            loopend_time = time.time()
-            # print("Loop with cell [", i, ",", j, "] took: ", loopend_time-loopstart_time, " seconds")
-
-
 # ------- Save results:  -------------------------------------------------------------------------------------------- #
 
-
 save_name = results_path + "\\TotalTravelTime.tif"
-SaveData.save_raster(total_ttime, save_name, gt, proj)
+rc.save_raster(total_ttime, save_name, gt, proj)
 
 print("Program took ", time.time() - start_time, " seconds to run")
