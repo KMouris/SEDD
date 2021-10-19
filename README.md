@@ -6,6 +6,12 @@ It can be used to calculate the travel time of eroded particles to the river net
 It works principally for each eight direction flow model (D8). Here the flow direction is defined
 according to [Jenson & Domingue 1998](https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/how-flow-direction-works.htm) which is the usual definition in GIS programs.
 
+
+## Authors
+- Kilian Mouris
+- Maria Fernanda Morales Oreamuno
+- Sebastian Schwindt
+
 ## Libraries
 
 *Python* libraries:  *gdal*, *numpy*, *pandas*
@@ -29,8 +35,3 @@ according to [Jenson & Domingue 1998](https://pro.arcgis.com/en/pro-app/latest/t
 
 ## Code Diagram
 ![](Diagrams/sedd_diagram.jpg)
-
-# Authors
-- Kilian Mouris
-- Maria Fernanda Morales Oreamuno
-- Sebastian Schwindt
