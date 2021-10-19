@@ -29,3 +29,8 @@ according to [Jenson & Domingue 1998](https://pro.arcgis.com/en/pro-app/latest/t
 
 ## Code Diagram
 ![sedd_diagram](https://user-images.githubusercontent.com/65073126/134777833-f2805ec7-9431-4e5f-ba08-a0b2b2945623.jpg)
+
+# Authors
+- Kilian Mouris
+- Maria Fernanda Morales Oreamuno
+- Sebastian Schwindt
