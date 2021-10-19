@@ -1,21 +1,18 @@
-from config import *
-
-import sedd_raster_calculations as rc
-import SumUpstream_ReadDataFunctions as ReadData
-import SumUpstream_SaveFunctions as SaveData
 """
-@ Authors
-Maria Fernanda Morales Oreamuno & Kilian Mouris
 Program sums up the pixel values of an input raster (e.g. travel time per cell) in upstream direction
-Important information: 
-    -Works for each eight-direction (D8) flow model, here the flow directions are defined according to Jenson & 
+Important information:
+    -Works for each eight-direction (D8) flow model, here the flow directions are defined according to Jenson &
      Domingue 1998 (ArcGIS)
     -Requires 2 input rasters: Flow direction and file with data to sum in the upstream direction (here traveltime)
     -Both rasters have to have the same properties (same number of columns, rows and georeferencing)
     -Rasters can be in .txt (ASCII format) or in .tif format
-    - If the rasters are in ASCII format: the comma delimiter must be a comma and the delimiter must be a space 
+    - If the rasters are in ASCII format: the comma delimiter must be a comma and the delimiter must be a space
         (if not, change the pd.read_csv input data in the functions "get_ascii_info" and "get_array_ascii")
-        """
+"""
+
+from config import *
+import sedd_raster_calculations as rc
+
 
 start_time = time.time()
 
