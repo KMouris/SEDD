@@ -28,7 +28,7 @@ according to [Jenson & Domingue 1998](https://pro.arcgis.com/en/pro-app/latest/t
 `TotalTravelTime.tif` raster file (.tif) which contains the travel time of the eroded particles to the river network as pixel values.
 
 ## Code Diagram
-![sedd_diagram](https://user-images.githubusercontent.com/65073126/134777833-f2805ec7-9431-4e5f-ba08-a0b2b2945623.jpg)
+![](Diagrams/sedd_diagram.jpg)
 
 # Authors
 - Kilian Mouris
