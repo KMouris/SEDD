@@ -17,7 +17,6 @@ import sedd_raster_calculations as rc
 start_time = time.time()
 
 # -------Read Data: ------------------------------------------------------------------------------------------------- #
-
 if os.path.splitext(flowdir_path)[1] == ".txt":  # If input flow direction raster is in ASCII format
     # Get gt, raster header and no data value information
     gt, df_head, no_data = rc.get_ascii_info(flowdir_path)
@@ -53,7 +52,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
     for j in range(0, flowdir_array.shape[1]):  # Loop through columns
         # Only do calculations if both flowdir and traveltime rasters have values in cell [i,j]
         if flowdir_array[i][j] != no_data and ttime_array[i][j] != no_data:
-            print("Starting the cell: [", i, ",", j, "]" )
+            # print("Starting the cell: [", i, ",", j, "]")
             # Cell [i,j] is our starting point, so save coordinates to variables x, y
             x = j  # Columns (j) are equivalent to changes in X
             y = i  # rows (i) are equivalent to changes in Y
@@ -160,7 +159,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
 
 # ------- Save results:  -------------------------------------------------------------------------------------------- #
 
-save_name = results_path + "\\TotalTravelTime.tif"
+save_name = os.path.join(results_path, "TotalTravelTime.tif")
 rc.save_raster(total_ttime, save_name, gt, proj)
 
 print("Program took ", time.time() - start_time, " seconds to run")
