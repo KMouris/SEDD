@@ -10,13 +10,12 @@ Important information:
         (if not, change the pd.read_csv input data in the functions "get_ascii_info" and "get_array_ascii")
 """
 
-from config import *
 import sedd_raster_calculations as rc
-
+from config import *
 
 start_time = time.time()
 
-# -------Read Data:
+# Read Data:
 # If input flow direction raster is in ASCII format
 if os.path.splitext(flowdir_path)[1] == ".txt":
     # Get gt, raster header and no data value information
@@ -40,14 +39,14 @@ else:  # If travel time raster is in .tif or other raster format
 if os.path.splitext(flowdir_path)[1] == ".txt" and os.path.splitext(traveltime_path)[1] == ".txt":
     proj = rc.get_raster_data(proj_raster, False)
 
-# -------Generate result rasters
+# Generate result rasters
 total_ttime = np.full(
     (flowdir_array.shape[0], flowdir_array.shape[1]), no_data)
 
 end_reading_time = time.time()
-print("Reading data took: ", end_reading_time-start_time)
+print("Reading data took: ", end_reading_time - start_time)
 
-# ------- LOOPS
+# LOOPS
 # Loop 1 and 2: Loop through each cell in the flowdir raster:
 for i in range(0, flowdir_array.shape[0]):  # Loop through rows
     for j in range(0, flowdir_array.shape[1]):  # Loop through columns
@@ -83,7 +82,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         value = value + ttime_array[y][x]
                         # Update X and Y values
                         x = x + 1
-                        y = y+1
+                        y = y + 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -96,7 +95,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         # Add travel time in cell [y,x] to total travel time
                         value = value + ttime_array[y][x]
                         # Update Y value only
-                        y = y+1
+                        y = y + 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -109,8 +108,8 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         # Add travel time in cell [y,x] to total travel time
                         value = value + ttime_array[y][x]
                         # Update X and Y values
-                        x = x-1
-                        y = y+1
+                        x = x - 1
+                        y = y + 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -123,7 +122,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         # Add travel time in cell [y,x] to total travel time
                         value = value + ttime_array[y][x]
                         # Update X value only
-                        x = x-1
+                        x = x - 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -136,8 +135,8 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         # Add travel time in cell [y,x] to total travel time
                         value = value + ttime_array[y][x]
                         # Update X and Y values
-                        x = x-1
-                        y = y-1
+                        x = x - 1
+                        y = y - 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -150,7 +149,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
                         # Add travel time in cell [y,x] to total travel time
                         value = value + ttime_array[y][x]
                         # Update Y value only
-                        y = y-1
+                        y = y - 1
                         # If the updated [y,x] coordinate is still inside the original flowdir raster:
                         if 0 <= x < flowdir_array.shape[1] and 0 <= y < flowdir_array.shape[0]:
                             # If the next cell is a no data cell (reached a river)
@@ -181,7 +180,7 @@ for i in range(0, flowdir_array.shape[0]):  # Loop through rows
             if total_ttime[i][j] < 0:
                 total_ttime[i][j] = no_data
 
-# ------- Save results:  -------------------------------------------------------------------------------------------- #
+# Save results:
 
 save_name = os.path.join(results_path, "total_travel_time.tif")
 rc.save_raster(total_ttime, save_name, gt, proj)

@@ -19,7 +19,6 @@ except ImportError as e:
     print('ModuleNotFoundError: Missing fundamental packages (required: gdal, numpy, pandas)')
     print(e)
 
-
 """Input rasters:
     *All rasters must have the same extent, pixel size (resolution)
 - flowdir_path: string, path for glow direction raster (in .txt ASCII file format or raster format)
@@ -30,7 +29,7 @@ except ImportError as e:
 """
 
 base_dir = os.path.abspath("") + "/"
-flowdir_path = r"" + base_dir + "example-files\fl_dir_4000.txt"
-traveltime_path = r"" + base_dir + "example-files\traveltime_percell_corr.txt"
-proj_raster = r"" + base_dir + "example-files\fildembanja2.tif"
+flowdir_path = r"" + base_dir + "example-files/fl_dir_4000.txt"
+traveltime_path = r"" + base_dir + "example-files/traveltime_percell_corr.txt"
+proj_raster = r"" + base_dir + "example-files/fildembanja2.tif"
 results_path = r"" + base_dir + "results"

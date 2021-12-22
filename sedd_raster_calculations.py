@@ -34,7 +34,7 @@ def get_ascii_info(file_path):
     ulx = float(info_array[2])
     # Get uly by adding all the rows above the lly from the
     uly = float(info_array[3] + cell_size * info_array[1])
-    #                                                       # header information
+    #  header information
     no_data = float(info_array[5])
 
     gt_array = [ulx, cell_size, 0.0, uly, 0.0, -cell_size]
@@ -52,12 +52,12 @@ def get_array_ascii(file_path):
     :return: array with the raster data (including no data values)
     """
     return pd.read_csv(
-                file_path,
-                delimiter="\s+",
-                header=None,
-                skiprows=6,
-                decimal=","
-                ).to_numpy()
+        file_path,
+        delimiter="\s+",
+        header=None,
+        skiprows=6,
+        decimal=","
+    ).to_numpy()
 
 
 def get_raster_data(raster_path, data_info):
@@ -101,14 +101,14 @@ def save_raster(array, output_path, gt, proj):
     # #Step 2: Create the raster files to save, with all the data: folder + name, number of columns (x),
     # number of rows (y), No. of bands, output data type (gdal type)
     outrs = driver.Create(
-                    output_path,
-                    xsize=array.shape[1],
-                    ysize=array.shape[0],
-                    bands=1,
-                    eType=gdal.GDT_Float32
-                    )
+        output_path,
+        xsize=array.shape[1],
+        ysize=array.shape[0],
+        bands=1,
+        eType=gdal.GDT_Float32
+    )
 
-    # Step 3: Assign raster data and assaign the array to the raster
+    # Step 3: Assign raster data and assign the array to the raster
     # assign geo transform data from the original input raster (same size)
     outrs.SetGeoTransform(gt)
     # assign projection to raster from original input raster (same projection)
